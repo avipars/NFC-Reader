@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SetupZone">
+
+    <TextView
+        android:padding="15dp"
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="Choose a Zone"/>
+
+    <Spinner
+        android:padding="10dp"
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:spinnerMode="dropdown"
+        android:layout_height="50dp"
+        android:layout_below="@id/text">
+    </Spinner>
+
+    <Button
+        android:padding="10dp"
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
