@@ -1,6 +1,7 @@
 package com.aviparshan.nfcreader;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,10 +19,14 @@ public class SetupZone extends AppCompatActivity {
     Button btnCnt;
     private int spinPosition;
     public final static String bundle = "ZONE";
+    SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup_zone);
+
+        sp = getSharedPreferences(LoginActivity.PREFS,MODE_PRIVATE);
 
         zonePicker = findViewById(R.id.spinner);
         btnCnt = findViewById(R.id.button);
@@ -44,15 +49,10 @@ public class SetupZone extends AppCompatActivity {
         spinnerArray.add("Zone 3");
         spinnerArray.add("Zone 4");
         spinnerArray.add("Zone 5");
-        // (3) create an adapter from the list
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                spinnerArray
-        );
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // (4) set the adapter on the spinner
-        zonePicker.setAdapter(adapter);
+
+        ArrayAdapter<String> loaded = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerArray);
+        loaded.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        zonePicker.setAdapter(loaded);
     }
 
     Spinner.OnItemSelectedListener onItemSelectedListener = new Spinner.OnItemSelectedListener() {
@@ -71,6 +71,7 @@ public class SetupZone extends AppCompatActivity {
 //
 //            }
 
+
         }
 
         @Override
@@ -82,9 +83,10 @@ public class SetupZone extends AppCompatActivity {
     Button.OnClickListener onButtonClick = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
+            sp.edit().putInt(bundle,spinPosition).apply();
             Intent intent =  new Intent (SetupZone.this, Main.class);
-            intent.putExtra(bundle, spinPosition); //sending currently selected zone as bundle to nfc reader
             startActivity(intent);
+            finish();
         }
     };
 }

@@ -70,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:textStyle="bold" />
 
         </LinearLayout>

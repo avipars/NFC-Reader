@@ -7,6 +7,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -63,10 +64,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
+    SharedPreferences sp;
+    final static String PREFS = "PREFS_SHARED";
+    final static String LOGGED = "LOGGED_IN";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        sp = getSharedPreferences(PREFS,MODE_PRIVATE);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -93,6 +100,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        if(sp.getBoolean(LOGGED,true)){
+            goToMainActivity();
+            //skip to main
+        }
+    }
+
+    private void goToMainActivity() {
+        Intent in = new Intent(LoginActivity.this, Main.class);
+        startActivity(in);
+        finish();
     }
 
     private void populateAutoComplete() {
@@ -188,6 +206,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+            sp.edit().putBoolean(LOGGED,false).apply();
+
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
@@ -332,10 +352,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                sp.edit().putBoolean(LOGGED,true).apply();
                 Intent in = new Intent(LoginActivity.this, SetupZone.class);
                 startActivity(in);
-
+                finish();
+                
             } else {
+                sp.edit().putBoolean(LOGGED,false).apply();
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
@@ -345,7 +368,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+            sp.edit().putBoolean(LOGGED,false).apply();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // disable going back to the MainActivity
+        moveTaskToBack(true);
     }
 }
 
