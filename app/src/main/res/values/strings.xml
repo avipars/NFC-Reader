@@ -13,4 +13,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="nfc_place">Place your NFC card behind the device</string>
+    <string name="mark_present">Mark Present</string>
+    <string name="zone">Choose a Safe Zone</string>
+    <string name="continue_zone">Continue</string>
 </resources>

@@ -6,11 +6,32 @@
 
     <TextView
         android:id="@+id/prompt"
-        android:padding="10dp"
+        android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:textSize="24sp"
-        android:text="Place your NFC card behind the device " />
+        android:layout_centerVertical="true"
+        android:padding="5dp"
+        android:text="@string/nfc_place"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal|bottom"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <CheckBox
+            android:id="@+id/check"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:text="@string/mark_present"
+            android:textSize="15sp" />
+    </LinearLayout>
 
 </RelativeLayout>

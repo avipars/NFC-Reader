@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SetupZone">
+    tools:context=".activities.SetupZone">
 
     <TextView
         android:padding="15dp"
@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="Choose a Safe Zone"/>
+        android:text="@string/zone" />
 
     <Spinner
         android:padding="10dp"
@@ -27,7 +27,7 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Continue"
+        android:text="@string/continue_zone"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_alignParentBottom="true"/>
 

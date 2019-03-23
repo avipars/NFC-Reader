@@ -1,5 +1,6 @@
-package com.aviparshan.nfcreader;
+package com.aviparshan.nfcreader.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+
+import com.aviparshan.nfcreader.R;
+import com.aviparshan.nfcreader.utils.BaseApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +24,16 @@ public class SetupZone extends AppCompatActivity {
     private int spinPosition;
     public final static String bundle = "ZONE";
     SharedPreferences sp;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setup_zone);
-
-        sp = getSharedPreferences(LoginActivity.PREFS,MODE_PRIVATE);
-
-        zonePicker = findViewById(R.id.spinner);
-        btnCnt = findViewById(R.id.button);
-
-        setupSpinner();
-        zonePicker.setOnItemSelectedListener(onItemSelectedListener);
-        btnCnt.setOnClickListener(onButtonClick);
-
-        //btnCnt.setEnabled(false);
-
-    }
+    Context context;
+    Button.OnClickListener onButtonClick = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            BaseApp.setZone(context, spinPosition);
+            Intent intent = new Intent(SetupZone.this, Main.class);
+            startActivity(intent);
+            finish();
+        }
+    };
 
     private void setupSpinner()
     {
@@ -70,8 +66,6 @@ public class SetupZone extends AppCompatActivity {
 //                    break;
 //
 //            }
-
-
         }
 
         @Override
@@ -80,13 +74,21 @@ public class SetupZone extends AppCompatActivity {
         }
     };
 
-    Button.OnClickListener onButtonClick = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            sp.edit().putInt(bundle,spinPosition).apply();
-            Intent intent =  new Intent (SetupZone.this, Main.class);
-            startActivity(intent);
-            finish();
-        }
-    };
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_setup_zone);
+
+        context = this;
+
+        zonePicker = findViewById(R.id.spinner);
+        btnCnt = findViewById(R.id.button);
+
+        setupSpinner();
+        zonePicker.setOnItemSelectedListener(onItemSelectedListener);
+        btnCnt.setOnClickListener(onButtonClick);
+
+        //btnCnt.setEnabled(false);
+
+    }
 }

@@ -1,13 +1,13 @@
-package com.aviparshan.nfcreader;
+package com.aviparshan.nfcreader.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -29,6 +29,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.aviparshan.nfcreader.R;
+import com.aviparshan.nfcreader.utils.BaseApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,22 +66,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
-    SharedPreferences sp;
-    final static String PREFS = "PREFS_SHARED";
-    final static String LOGGED = "LOGGED_IN";
+    Context context;
+    private boolean logged_in = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        sp = getSharedPreferences(PREFS,MODE_PRIVATE);
+
+        context = this;
 
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -90,7 +92,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,7 +103,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        if(sp.getBoolean(LOGGED,true)){
+        logged_in = BaseApp.getLogged(this);
+
+        if (logged_in) {
             goToMainActivity();
             //skip to main
         }
@@ -206,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-            sp.edit().putBoolean(LOGGED,false).apply();
+            BaseApp.setLogged(this, false);
 
         } else {
             // Show a progress spinner, and kick off a background task to
@@ -352,13 +356,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                sp.edit().putBoolean(LOGGED,true).apply();
+
+                BaseApp.setLogged(context, true);
                 Intent in = new Intent(LoginActivity.this, SetupZone.class);
                 startActivity(in);
                 finish();
-                
+
             } else {
-                sp.edit().putBoolean(LOGGED,false).apply();
+                BaseApp.setLogged(context, false);
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
@@ -368,7 +373,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
-            sp.edit().putBoolean(LOGGED,false).apply();
+            BaseApp.setLogged(context, false);
         }
     }
 

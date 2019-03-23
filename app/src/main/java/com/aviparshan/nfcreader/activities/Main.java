@@ -1,18 +1,27 @@
-package com.aviparshan.nfcreader;
+package com.aviparshan.nfcreader.activities;
 
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.aviparshan.nfcreader.R;
+import com.aviparshan.nfcreader.utils.BaseApp;
+import com.aviparshan.nfcreader.utils.NFCCardReader;
 
 public class Main extends AppCompatActivity {
 
@@ -25,8 +34,10 @@ public class Main extends AppCompatActivity {
 
     TextView prompt;
     public int zone;
+    public boolean logged_in;
 
-    SharedPreferences sp;
+    LinearLayout linear;
+    CheckBox check;
 
     //TODO: finish reading implementation
 
@@ -35,26 +46,32 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sp = getSharedPreferences(LoginActivity.PREFS,MODE_PRIVATE);
+        zone = BaseApp.getZone(this);
+        logged_in = BaseApp.getLogged(this);
 
-            zone = sp.getInt(SetupZone.bundle, 9);
-            Toast.makeText(this, "Zone " + zone, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Zone " + zone, Toast.LENGTH_SHORT).show();
 
-            nfcChecker();
-            nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-            prompt = (TextView) findViewById(R.id.prompt);
-            enableReaderMode();
+        nfcChecker();
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        prompt = findViewById(R.id.prompt);
 
-        //TODO: finish login flow
-        if(sp.getBoolean(LoginActivity.LOGGED,false)){
-            goToLogin();
-            //return to login
-        }
+        linear = findViewById(R.id.linear);
+        linear.setVisibility(View.GONE);
+        check = findViewById(R.id.check);
+
+        enableReaderMode();
+
 //        else if(!sp.contains(SetupZone.bundle)){
 //            goToZone();
 //            //return to login
 //        }
 
+        check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                Toast.makeText(Main.this, "User Present: " + checked, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void goToZone() {
@@ -69,6 +86,28 @@ public class Main extends AppCompatActivity {
         finish();
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_log) {
+            //BaseApp.clearSharedPrefs(this);
+            BaseApp.setLogged(this, false);
+            goToLogin();
+            return true;
+        } else if (id == R.id.action_zone) {
+            goToZone();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
 
     @Override
     public void onPause() {
@@ -114,11 +153,11 @@ public class Main extends AppCompatActivity {
     }
 
     public void displayTagId(final String tagId) {
-        //final TextView txtTagId = (TextView) findViewById(R.id.txtTagId);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 prompt.setText(tagId);
+                linear.setVisibility(View.VISIBLE);
             }
         });
     }
