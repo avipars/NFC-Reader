@@ -23,7 +23,7 @@ import com.aviparshan.nfcreader.R;
 import com.aviparshan.nfcreader.utils.BaseApp;
 import com.aviparshan.nfcreader.utils.NFCCardReader;
 
-public class Main extends AppCompatActivity {
+public class MainReaderActivity extends AppCompatActivity {
 
     public static final String ERROR_DETECTED = "No NFC tag detected!";
     public static final String TAG = "com.avipars.NFCReader";
@@ -51,7 +51,6 @@ public class Main extends AppCompatActivity {
 
         Toast.makeText(this, "Zone " + zone, Toast.LENGTH_SHORT).show();
 
-        nfcChecker();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         prompt = findViewById(R.id.prompt);
 
@@ -61,27 +60,22 @@ public class Main extends AppCompatActivity {
 
         enableReaderMode();
 
-//        else if(!sp.contains(SetupZone.bundle)){
-//            goToZone();
-//            //return to login
-//        }
-
         check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                Toast.makeText(Main.this, "User Present: " + checked, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainReaderActivity.this, "User Present: " + checked, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void goToZone() {
-        Intent in = new Intent(Main.this, SetupZone.class);
-        startActivity(in);
-        finish();
+    @Override
+    public void onStop() {
+        super.onStop();
+        nfcAdapter.disableReaderMode(this);
     }
 
-    private void goToLogin() {
-        Intent in = new Intent(Main.this, LoginActivity.class);
+    private void goToZone() {
+        Intent in = new Intent(MainReaderActivity.this, SetupZoneActivity.class);
         startActivity(in);
         finish();
     }
@@ -109,15 +103,24 @@ public class Main extends AppCompatActivity {
 
     }
 
+    private void goToLogin() {
+        Intent in = new Intent(MainReaderActivity.this, LoginActivity.class);
+        startActivity(in);
+        finish();
+    }
+
     @Override
     public void onPause() {
         super.onPause();
+        nfcAdapter.disableReaderMode(this);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        nfcChecker();
+        enableReaderMode();
     }
 
     private void nfcChecker() {
@@ -125,14 +128,14 @@ public class Main extends AppCompatActivity {
 
         if (nfcAdapter == null) {
             // NFC is not available for device
-            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.nfc_not_supported, Toast.LENGTH_LONG).show();
             finish();
         } else if (!nfcAdapter.isEnabled()) {
             // NFC is available for device but not enabled
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle("Please Enable NFC");
-            dialog.setMessage("The app requires NFC and cannot function without it, please turn on NFC to continue using this application :)");
-            dialog.setPositiveButton("NFC Settings", new DialogInterface.OnClickListener() {
+            dialog.setTitle(R.string.enable_nfc);
+            dialog.setMessage(R.string.nfc_requiretd);
+            dialog.setPositiveButton(R.string.nfc_settings, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
@@ -145,6 +148,9 @@ public class Main extends AppCompatActivity {
         }
     }
 
+    /**
+     * Works well but not supported on older devices
+     */
     private void enableReaderMode() {
         NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
         if (nfc != null) {
@@ -158,6 +164,7 @@ public class Main extends AppCompatActivity {
             public void run() {
                 prompt.setText(tagId);
                 linear.setVisibility(View.VISIBLE);
+                check.setChecked(false); //resets checkbox
             }
         });
     }

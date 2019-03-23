@@ -17,4 +17,11 @@
     <string name="mark_present">Mark Present</string>
     <string name="zone">Choose a Safe Zone</string>
     <string name="continue_zone">Continue</string>
+    <string name="nfc_not_supported">This device doesn\'t support NFC.</string>
+    <string name="enable_nfc">Please Enable NFC</string>
+    <string name="nfc_settings">NFC Settings</string>
+    <string name="nfc_requiretd">The app requires NFC and cannot function without it, please turn on NFC to continue using this application :)</string>
+    <string name="internet">Please Enable Internet</string>
+    <string name="req_internet">The app requires Internet and cannot function without it, please turn on Internet to continue using this application :)</string>
+    <string name="internet_settings">Internet Settings</string>
 </resources>

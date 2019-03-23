@@ -66,6 +66,7 @@ public class BaseApp extends Application {
         return token;
     }
 
+
     @Override
     public void onCreate() {
         super.onCreate();

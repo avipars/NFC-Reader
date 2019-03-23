@@ -3,20 +3,21 @@ package com.aviparshan.nfcreader.utils;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 
-import com.aviparshan.nfcreader.activities.Main;
+import com.aviparshan.nfcreader.activities.MainReaderActivity;
 
 public class NFCCardReader implements NfcAdapter.ReaderCallback {
 
-    private Main mainActivity;
+    private MainReaderActivity mainReaderActivityActivity;
 
-    public NFCCardReader(Main mainActivity) {
-        this.mainActivity = mainActivity;
+    public NFCCardReader(MainReaderActivity mainReaderActivityActivity) {
+        this.mainReaderActivityActivity = mainReaderActivityActivity;
     }
 
     @Override
     public void onTagDiscovered(Tag tag) {
-        String tagId = bytesToHexString(tag.getId());
-        mainActivity.displayTagId(tagId);
+        //TODO: display UID as string rather than hex
+        String tagId = bytesToHexString(tag.getId()); //hex
+        mainReaderActivityActivity.displayTagId(tagId);
     }
 
     private String bytesToHexString(byte[] src) {
@@ -35,4 +36,6 @@ public class NFCCardReader implements NfcAdapter.ReaderCallback {
 
         return stringBuilder.toString();
     }
+
+
 }

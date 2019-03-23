@@ -17,7 +17,7 @@ import com.aviparshan.nfcreader.utils.BaseApp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetupZone extends AppCompatActivity {
+public class SetupZoneActivity extends AppCompatActivity {
 
     Spinner zonePicker;
     Button btnCnt;
@@ -25,11 +25,13 @@ public class SetupZone extends AppCompatActivity {
     public final static String bundle = "ZONE";
     SharedPreferences sp;
     Context context;
+    int zone;
+
     Button.OnClickListener onButtonClick = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             BaseApp.setZone(context, spinPosition);
-            Intent intent = new Intent(SetupZone.this, Main.class);
+            Intent intent = new Intent(SetupZoneActivity.this, MainReaderActivity.class);
             startActivity(intent);
             finish();
         }
@@ -40,6 +42,7 @@ public class SetupZone extends AppCompatActivity {
 
         List<String> spinnerArray = new ArrayList<>();
         //TODO: Load zones from the server
+        spinnerArray.add("Zone 0");
         spinnerArray.add("Zone 1");
         spinnerArray.add("Zone 2");
         spinnerArray.add("Zone 3");
@@ -88,6 +91,8 @@ public class SetupZone extends AppCompatActivity {
         zonePicker.setOnItemSelectedListener(onItemSelectedListener);
         btnCnt.setOnClickListener(onButtonClick);
 
+        zone = BaseApp.getZone(this);
+        zonePicker.setSelection(zone, true);
         //btnCnt.setEnabled(false);
 
     }

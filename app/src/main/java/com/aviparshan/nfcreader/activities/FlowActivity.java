@@ -25,7 +25,7 @@ public class FlowActivity extends AppCompatActivity {
         logged_in = BaseApp.getLogged(this);
         // go straight to main if a token is stored
         if (logged_in) {
-            activityIntent = new Intent(this, Main.class);
+            activityIntent = new Intent(this, MainReaderActivity.class);
         } else {
             activityIntent = new Intent(this, LoginActivity.class);
         }
