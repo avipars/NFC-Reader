@@ -1,5 +1,4 @@
 # NFCreader
 
-file:///C:/Users/avi/Downloads/4Dev.pdf
+Sample code for an NFC Reader with shared preferences and a login flow
 
-Download APK:
